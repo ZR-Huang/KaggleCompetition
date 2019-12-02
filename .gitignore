@@ -1,3 +1,4 @@
 .vscode/*.json
 */data/*.csv
 */data/*.zip
+*/data/data_description.txt
