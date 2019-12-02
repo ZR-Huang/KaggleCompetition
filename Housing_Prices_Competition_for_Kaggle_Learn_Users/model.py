@@ -34,7 +34,7 @@ categorical_transformer = Pipeline(steps=[
 preprocessor = ColumnTransformer(
     transformers=[
         ('num', numerical_transformer, numerical_cols),
-        ('low_cat', categorical_transformer, categorical_cols),
+        ('cate', categorical_transformer, categorical_cols),
     ]
 )
 model = XGBRegressor(n_estimators=1000, learning_rate=0.05, objective="reg:squarederror")
