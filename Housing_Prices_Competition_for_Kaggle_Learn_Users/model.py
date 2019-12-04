@@ -38,22 +38,7 @@ preprocessor = ColumnTransformer(
 
 model = XGBRegressor(objective="reg:squarederror")
 
-gs = GridSearchCV(model, 
-                  {'n_estimators': range(100, 1000, 25), 
-                   'learning_rate': [0.001, 0.003, 0.006, 0.009, 0.03, 0.06, 0.09, 0.1]}, 
-                  cv=5,
-                  scoring='reg_mean_absolute_error',
-                  n_jobs=4,
-                  verbose=1)
 
-gs_pipeline = Pipeline(steps=[
-    ('preprocessor', preprocessor),
-    ('gs', gs)
-])
-
-print(gs.best_params_)
-print(gs.best_score_)
-"""
 pipeline = Pipeline(steps=[
     ('preprocessor', preprocessor),
     ('model', model)
@@ -69,4 +54,3 @@ preds_test = pipeline.predict(X_test)
 output = pd.DataFrame({'Id': X_test.Id,
                        'SalePrice': preds_test})
 output.to_csv('submission.csv', index=False)
-"""
