@@ -2,3 +2,5 @@
 */data/*.csv
 */data/*.zip
 */data/data_description.txt
+.idea/*
+
