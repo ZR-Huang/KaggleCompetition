@@ -1,0 +1,103 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	//
+CrossValid.py	../2019_Data_Science_Bowl/CrossValid.py	1;"	kind:file	line:1
+EDA.py	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	1;"	kind:file	line:1
+FindParam.py	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	1;"	kind:file	line:1
+Model.py	../2019_Data_Science_Bowl/Model.py	1;"	kind:file	line:1
+Preprocess	../2019_Data_Science_Bowl/Preprocess.py	/^class Preprocess:$/;"	kind:class	line:8
+Preprocess.py	../2019_Data_Science_Bowl/Preprocess.py	1;"	kind:file	line:1
+X	../2019_Data_Science_Bowl/CrossValid.py	/^X = data.drop(['accuracy_group', 'session_title'], axis=1)$/;"	kind:variable	line:11
+X	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^X = data.drop(columns=['SalePrice'])$/;"	kind:variable	line:16
+X	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^X = pd.read_csv(train_data_path)$/;"	kind:variable	line:10
+X	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^X = pd.read_csv(train_data_path)$/;"	kind:variable	line:15
+X_test	../2019_Data_Science_Bowl/Model.py	/^X_test = pd.read_csv('2019_Data_Science_Bowl\/data\/test_input.csv')$/;"	kind:variable	line:13
+X_test	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^X_test = pd.read_csv(test_data_path)$/;"	kind:variable	line:16
+X_train	../2019_Data_Science_Bowl/Model.py	/^X_train = data.drop(['accuracy_group'], axis=1)$/;"	kind:variable	line:11
+X_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2, rando/;"	kind:variable	line:19
+X_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2, rando/;"	kind:variable	line:19
+__get_event_code_list	../2019_Data_Science_Bowl/Preprocess.py	/^    def __get_event_code_list(self):$/;"	kind:member	line:24
+__get_title_list	../2019_Data_Science_Bowl/Preprocess.py	/^    def __get_title_list(self):$/;"	kind:member	line:20
+__get_win_code_of_title	../2019_Data_Science_Bowl/Preprocess.py	/^    def __get_win_code_of_title(self):$/;"	kind:member	line:28
+__init__	../2019_Data_Science_Bowl/Preprocess.py	/^    def __init__(self, filepath):$/;"	kind:member	line:10
+__load_data	../2019_Data_Science_Bowl/Preprocess.py	/^    def __load_data(self):$/;"	kind:member	line:16
+categorical_cols	../2019_Data_Science_Bowl/CrossValid.py	/^categorical_cols = [cname for cname in X.columns if X[cname].dtype == 'object']$/;"	kind:variable	line:14
+categorical_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^categorical_cols = [cname for cname in X.columns if X[cname].dtype == 'object']$/;"	kind:variable	line:17
+categorical_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^categorical_cols = [cname for cname in X.columns if X[cname].dtype == 'object']$/;"	kind:variable	line:23
+categorical_transformer	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^categorical_transformer = Pipeline(steps=[$/;"	kind:variable	line:26
+cols_with_missing	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^cols_with_missing = [col for col in X_train.columns$/;"	kind:variable	line:26
+compile_data	../2019_Data_Science_Bowl/Preprocess.py	/^    def compile_data(self, user_sample, test_set = False):$/;"	kind:member	line:32
+data	../2019_Data_Science_Bowl/CrossValid.py	/^data = pd.read_csv('2019_Data_Science_Bowl\/data\/train_input.csv')$/;"	kind:variable	line:9
+data	../2019_Data_Science_Bowl/Model.py	/^data = pd.read_csv('2019_Data_Science_Bowl\/data\/train_input.csv')$/;"	kind:variable	line:7
+data	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^data = pd.read_csv(data_path)$/;"	kind:variable	line:13
+data_path	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^data_path = ".\/data\/train.csv"$/;"	kind:variable	line:12
+drop_X_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^drop_X_train = X_train.drop(cols_with_missing, axis=1).select_dtypes(exclude='object')$/;"	kind:variable	line:29
+drop_X_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^drop_X_train = X_train.select_dtypes(exclude='object')$/;"	kind:variable	line:45
+drop_X_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^drop_X_valid = X_valid.drop(cols_with_missing, axis=1).select_dtypes(exclude='object')$/;"	kind:variable	line:30
+drop_X_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^drop_X_valid = X_valid.select_dtypes(exclude='object')$/;"	kind:variable	line:46
+encoder	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')$/;"	kind:variable	line:24
+get_data	../2019_Data_Science_Bowl/Preprocess.py	/^    def get_data(self, test_set=False):$/;"	kind:member	line:137
+get_scores_of_data	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^def get_scores_of_data(X_train, X_valid, y_train, y_valid):$/;"	kind:function	line:33
+gs	../2019_Data_Science_Bowl/CrossValid.py	/^gs = GridSearchCV(RandomForestRegressor(random_state=666), $/;"	kind:variable	line:23
+gs	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^gs = GridSearchCV(XGBRegressor(objective="reg:squarederror"), $/;"	kind:variable	line:33
+high_cardinality_cate_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^high_cardinality_cate_cols = [cname for cname in X_train.columns if X_train[cname].nunique()>=10/;"	kind:variable	line:24
+imputed_X	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^imputed_X = pd.DataFrame(imputer.fit_transform(X.select_dtypes(exclude='object')))$/;"	kind:variable	line:20
+imputed_X_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^imputed_X_train = pd.DataFrame(imputer.fit_transform(X_train))$/;"	kind:variable	line:66
+imputed_X_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^imputed_X_train = pd.DataFrame(imputer.fit_transform(drop_X_train))$/;"	kind:variable	line:47
+imputed_X_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^imputed_X_valid = pd.DataFrame(imputer.transform(X_valid))$/;"	kind:variable	line:67
+imputed_X_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^imputed_X_valid = pd.DataFrame(imputer.transform(drop_X_valid))$/;"	kind:variable	line:48
+imputed_cat_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^imputed_cat_cols = pd.DataFrame(imputer.fit_transform(X[categorical_cols]))$/;"	kind:variable	line:25
+imputer	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^imputer = SimpleImputer(strategy='most_frequent')$/;"	kind:variable	line:44
+imputer	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^imputer = SimpleImputer(strategy='most_frequent')$/;"	kind:variable	line:19
+label_X_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^label_X_train = X_train.copy()$/;"	kind:variable	line:58
+label_X_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^label_X_valid = X_valid.copy()$/;"	kind:variable	line:59
+label_encoder	../2019_Data_Science_Bowl/CrossValid.py	/^label_encoder = LabelEncoder()$/;"	kind:variable	line:15
+label_encoder	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^label_encoder = LabelEncoder()$/;"	kind:variable	line:57
+low_cardinality_cate_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^low_cardinality_cate_cols = [cname for cname in X_train.columns if X_train[cname].nunique()<10 a/;"	kind:variable	line:23
+model	../2019_Data_Science_Bowl/Model.py	/^model = RandomForestRegressor(n_estimators=500, random_state=666)$/;"	kind:variable	line:16
+model	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^model = XGBRegressor(objective="reg:squarederror")$/;"	kind:variable	line:39
+model.py	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	1;"	kind:file	line:1
+np	../2019_Data_Science_Bowl/CrossValid.py	/^import numpy as np$/;"	kind:namespace	line:7
+np	../2019_Data_Science_Bowl/Model.py	/^import numpy as np$/;"	kind:namespace	line:5
+np	../2019_Data_Science_Bowl/Preprocess.py	/^import numpy as np$/;"	kind:namespace	line:2
+num_X_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^num_X_train = imputed_X_train.drop(low_cardinality_cate_cols, axis=1)$/;"	kind:variable	line:77
+num_X_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^num_X_valid = imputed_X_valid.drop(low_cardinality_cate_cols, axis=1)$/;"	kind:variable	line:78
+numerical_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^numerical_cols = [cname for cname in X_train.columns if X_train[cname].dtype in ['int64', 'float/;"	kind:variable	line:21
+numerical_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^numerical_cols = [cname for cname in X.columns if X[cname].dtype in ['int64', 'float64']]$/;"	kind:variable	line:16
+numerical_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^numerical_cols = [cname for cname in X.columns if X[cname].dtype in ['int64', 'float64']]$/;"	kind:variable	line:22
+numerical_transformer	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^numerical_transformer = SimpleImputer(strategy='most_frequent')$/;"	kind:variable	line:25
+oh_X	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^oh_X = pd.concat([imputed_X, oh_cols], axis=1)$/;"	kind:variable	line:30
+oh_X_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^oh_X_train = pd.concat([num_X_train, oh_cols_train], axis=1)$/;"	kind:variable	line:80
+oh_X_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^oh_X_valid = pd.concat([num_X_valid, oh_cols_valid], axis=1)$/;"	kind:variable	line:81
+oh_cols	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^oh_cols = pd.DataFrame(encoder.fit_transform(imputed_cat_cols))$/;"	kind:variable	line:27
+oh_cols_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^oh_cols_train = pd.DataFrame(oh_encoder.fit_transform(imputed_X_train[low_cardinality_cate_cols]/;"	kind:variable	line:72
+oh_cols_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^oh_cols_valid = pd.DataFrame(oh_encoder.transform(imputed_X_valid[low_cardinality_cate_cols]))$/;"	kind:variable	line:73
+oh_encoder	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^oh_encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)$/;"	kind:variable	line:71
+output	../2019_Data_Science_Bowl/Model.py	/^output = pd.DataFrame({'installation_id': X_test.installation_id,$/;"	kind:variable	line:32
+output	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^output = pd.DataFrame({'Id': X_test.Id,$/;"	kind:variable	line:54
+p_test	../2019_Data_Science_Bowl/Preprocess.py	/^    p_test = Preprocess('2019_Data_Science_Bowl\/data\/test.csv')$/;"	kind:variable	line:158
+pd	../2019_Data_Science_Bowl/CrossValid.py	/^import pandas as pd$/;"	kind:namespace	line:1
+pd	../2019_Data_Science_Bowl/Model.py	/^import pandas as pd$/;"	kind:namespace	line:1
+pd	../2019_Data_Science_Bowl/Preprocess.py	/^import pandas as pd$/;"	kind:namespace	line:1
+pd	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^import pandas as pd$/;"	kind:namespace	line:1
+pd	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^import pandas as pd$/;"	kind:namespace	line:4
+pd	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^import pandas as pd$/;"	kind:namespace	line:1
+pipeline	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^pipeline = Pipeline(steps=[$/;"	kind:variable	line:42
+pred	../2019_Data_Science_Bowl/Model.py	/^pred = model.predict(X_test.drop(['installation_id'], axis=1))$/;"	kind:variable	line:20
+preds_test	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^preds_test = pipeline.predict(X_test)$/;"	kind:variable	line:53
+preprocessor	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^preprocessor = ColumnTransformer($/;"	kind:variable	line:31
+scores	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^scores = -1 * cross_val_score(pipeline, X, y, cv=5, scoring='neg_mean_absolute_error')$/;"	kind:variable	line:47
+test_data_path	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^test_data_path = '.\/data\/test.csv'$/;"	kind:variable	line:13
+train_data_path	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^train_data_path = '.\/data\/train.csv'$/;"	kind:variable	line:8
+train_data_path	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^train_data_path = '.\/data\/train.csv'$/;"	kind:variable	line:12
+y	../2019_Data_Science_Bowl/CrossValid.py	/^y = data['accuracy_group']$/;"	kind:variable	line:10
+y	../2019_Data_Science_Bowl/Model.py	/^y = data['accuracy_group']$/;"	kind:variable	line:10
+y	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^y = data['SalePrice']$/;"	kind:variable	line:15
+y	../Housing_Prices_Competition_for_Kaggle_Learn_Users/FindParam.py	/^y = X['SalePrice']$/;"	kind:variable	line:12
+y	../Housing_Prices_Competition_for_Kaggle_Learn_Users/model.py	/^y = X['SalePrice']$/;"	kind:variable	line:19
+y_train	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2, rando/;"	kind:variable	line:19
+y_valid	../Housing_Prices_Competition_for_Kaggle_Learn_Users/EDA.py	/^X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2, rando/;"	kind:variable	line:19
