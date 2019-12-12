@@ -4,6 +4,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
+from xgboost import XGBRegressor
 
 data = pd.read_csv('2019_Data_Science_Bowl/data/train_input.csv')
 
@@ -21,7 +22,10 @@ for col in categorical_cols:
     X_test[col] = label_encoder.transform(X_test[col])
 
 
-model = RandomForestRegressor(n_estimators=800, random_state=666)
+model = XGBRegressor(learning_rate=0.06, 
+                    n_estimators=275,
+                    objective="reg:squarederror",
+                    random_state=666)
 
 model.fit(X_train, y)
 

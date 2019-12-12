@@ -1,10 +1,20 @@
 import pandas as pd
-from sklearn.model_selection import cross_val_score, GridSearchCV
+import numpy as np
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+from sklearn.model_selection import cross_val_score, GridSearchCV, StratifiedKFold, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 from sklearn.compose import ColumnTransformer
-import numpy as np
+from sklearn.metrics import cohen_kappa_score
+
+from xgboost import XGBRegressor
+
+from functools import partial
+import scipy
+
 
 data = pd.read_csv('2019_Data_Science_Bowl/data/train_input.csv')
 y = data['accuracy_group']
@@ -20,11 +30,12 @@ for col in categorical_cols:
 #     ('model', RandomForestRegressor(n_estimators=500,random_state=666)),
 #     ])
 
-gs = GridSearchCV(RandomForestRegressor(random_state=666), 
-                  {'n_estimators': range(100, 1000, 25), 
+gs = GridSearchCV(XGBRegressor(objective="reg:squarederror",random_state=666), 
+                  {'n_estimators': range(100, 1000, 25),
+                   'learning_rate': [0.001, 0.003, 0.006, 0.009, 0.03, 0.06, 0.09, 0.1],
                     }, 
                   cv=3,
-                  scoring='neg_root_mean_squared_error',
+                  scoring='neg_mean_squared_error',
                   n_jobs=10,
                   verbose=1)
 
