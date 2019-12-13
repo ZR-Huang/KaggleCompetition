@@ -19,7 +19,7 @@ n_jobs = multiprocessing.cpu_count()-1
 
 data = pd.read_csv('2019_Data_Science_Bowl/data/train_input.csv')
 y = data['accuracy_group']
-X = data.drop(['accuracy_group', 'session_title'], axis=1)
+X = data.drop(['accuracy_group'], axis=1)
 
 categorical_cols = [cname for cname in X.columns if X[cname].dtype == 'object']
 label_encoder = LabelEncoder()
@@ -27,13 +27,20 @@ for col in categorical_cols:
     X[col] = label_encoder.fit_transform(X[col])
 
 
+# param = {
+#   'n_estimators': range(200, 600, 25),
+#   'learning_rate': [0.001, 0.003, 0.006, 0.009, 0.01, 0.03, 0.06],
+#   'max_depth': [3, 6, 9, 12, 15],
+#   'min_child_weight': [1, 2, 3, 4, 5, 6, 7],
+#   'subsample' : [0.4, 0.5, 0.6, 0.7, 0.8],
+# }
+
 param = {
-  'n_estimators': range(200, 600, 25),
-  'learning_rate': [0.001, 0.003, 0.006, 0.009, 0.01, 0.03, 0.06],
-  'max_depth': [3, 6, 9, 12, 15],
-  'min_child_weight': [1, 2, 3, 4, 5, 6, 7],
-  'subsample' : [0.4, 0.5, 0.6, 0.7, 0.8],
+  'n_estimators': [275],
+  'learning_rate': [0.06],
+  'max_depth': [9],
 }
+
 
 
 gs = GridSearchCV(XGBRegressor(
@@ -41,7 +48,7 @@ gs = GridSearchCV(XGBRegressor(
                 param_grid=param, 
                 cv=3,
                 scoring='neg_mean_squared_error',
-                n_jobs=15,
+                n_jobs=n_jobs,
                 verbose=1)
 
 gs.fit(X, y)

@@ -13,6 +13,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.metrics import cohen_kappa_score, accuracy_score
 
 import xgboost as xgb
+from catboost import CatBoostRegressor
+import lightgbm as lgb
 
 from functools import partial
 import scipy
@@ -34,27 +36,26 @@ else:
 class Preprocess:
 
     def __init__(self, filepath):
-
         self.filepath = filepath
-        # self.data = self.load_data
-        # self.columns = columns
+        
 
     def __load_data(self):
         self.data = pd.read_csv(self.filepath)
-        # return pd.read_csv(self.filepath)
+
     
     def __get_title_list(self):
         self.title_list = list(self.data.title.unique())
-        # return list(self.data.title.unique())
+
 
     def __get_event_code_list(self):
         self.event_code_list = list(self.data.event_code.unique())
-        # return list(self.data.event_code.unique())
+
 
     def __get_win_code_of_title(self):
         self.win_code_of_title = dict(zip(self.title_list, (np.ones(len(self.title_list))).astype('int')* 4100))
         self.win_code_of_title['Bird Measurer (Assessment)'] = 4110
     
+
     def compile_data(self, user_sample, test_set = False):
         '''
         user_sample : DataFrame from train/test group by 'installation_id'
@@ -86,7 +87,8 @@ class Preprocess:
             session_title = session['title'].iloc[0]
 
             if session_type != 'Assessment':
-                time_spent_each_title[session_title] += session['game_time'].iloc[-1]
+                time_spent = session['game_time'].iloc[-1] / 1000 # [sec] add
+                time_spent_each_title[session_title] += time_spent
             
             if session_type == 'Assessment' and (test_set or len(session) > 1):
                 # search for event_code 4100 (4110)
@@ -99,7 +101,7 @@ class Preprocess:
                 features = deepcopy(types_count)
                 features.update(deepcopy(time_spent_each_title))
                 features.update(deepcopy(event_code_count))
-                features['session_title'] = session_type
+                features['session_title'] = session_title
                 features['accumu_win_n'] = accumu_win_n
                 features['accumu_loss_n'] = accumu_loss_n
                 accumu_win_n += win_n
@@ -160,6 +162,7 @@ class Preprocess:
             return user_assessments[-1]
         return user_assessments
 
+
     def get_data(self, test_set=False):
         # get things done
         self.__load_data()
@@ -192,6 +195,7 @@ X_test = p_test.get_data(test_set=True)
 X_test.drop(['accuracy_group', 'session_title'], axis=1, inplace=True)
 
 
+all_feature = [cname for cname in X_train.columns]
 categorical_cols = [cname for cname in X_train.columns if X_train[cname].dtype == 'object']
 label_encoder = LabelEncoder()
 for col in categorical_cols:
@@ -203,10 +207,9 @@ NFOLDS = 5
 folds = StratifiedKFold(n_splits=NFOLDS, shuffle=True, random_state=666)
 
 xgb_models = []
-scores = []
-params = {
-    'max_depth' : 9,
-    'learning_rate': 0.06,
+xgb_params = {
+    'max_depth' : 9, 
+    'learning_rate': 0.06, 
     'n_estimators': 275,
     'objective': 'reg:squarederror',
     'seed' : 666
@@ -216,7 +219,7 @@ for fold, (train_ids, val_ids) in enumerate(folds.split(X_train, y)):
     print(f'- Fold :{fold+1} / {NFOLDS}')
     dtrain = xgb.DMatrix(X_train.iloc[train_ids], y[train_ids])
     dval = xgb.DMatrix(X_train.iloc[val_ids], y[val_ids])
-    model = xgb.train(params = params,
+    model = xgb.train(params = xgb_params,
                       dtrain = dtrain,
                       num_boost_round=5000,
                       evals=[(dtrain, 'train'), (dval, 'val')],
@@ -224,17 +227,83 @@ for fold, (train_ids, val_ids) in enumerate(folds.split(X_train, y)):
                       verbose_eval=50)
     xgb_models.append(model)
 
+cat_models = []
+def get_catboost():
+    return CatBoostRegressor(
+        iterations=5000,
+        learning_rate=0.02,
+        random_seed=666,
+        depth=10,
+        border_count=108,
+        bagging_temperature=2.348502,
+        early_stopping_rounds=200
+    )
+
+for fold, (train_ids, val_ids) in enumerate(folds.split(X_train, y)):
+    print(f'- Fold :{fold+1} / {NFOLDS}')
+    model = get_catboost()
+    model.fit(X.loc[train_ids, all_feature], y.loc[train_ids],
+    eval_set=(X.loc[val_ids, all_feature], y.loc[val_ids]),
+    use_best_model=False,
+    verbose=500,
+    cat_features=categorical_cols)
+    cat_models.append(model)
+
+
+lgb_models = []
+lgb_params = {
+    'n_jobs': -1,
+    'seed': 666,
+    'boosting_type': 'gbdt',
+    'objective': 'regression',
+    'metric': 'rmse',
+    'eval_metric': 'cappa',
+    'subsample': 0.75,
+    'feature_fraction':0.998495,    # add
+    'bagging_fraction': 0.872417,   # mod 0.8→
+    'bagging_freq': 1,              # add
+    'colsample_bytree': 0.8,        # add
+    'subsample_freq': 1,
+    'learning_rate': 0.02,
+    'feature_fraction': 0.9,
+    'max_depth': 13,                # mod 10→
+    'num_leaves': 1028,             # mod      # 2^max_depth < num_leaves
+    'min_gain_to_split':0.085502,   # add
+    'min_child_weight':1.087712,    # add
+    'lambda_l1': 1,  
+    'lambda_l2': 1,
+    'verbose': 100,
+}
+for fold, (train_ids, val_ids) in enumerate(folds.split(X_train, y)):
+    print(f'- Fold :{fold+1} / {NFOLDS}')
+    train_set = lgb.Dataset(X.iloc[train_ids], y[train_ids], categorical_feature=categorical_cols)
+    val_set = lgb.Dataset(X.iloc[val_ids], y[val_ids], categorical_feature=categorical_cols)
+    model = lgb.train(params=params, train_set=train_set, valid_sets=[train_set, val_set],
+    num_boost_round=5000, early_stopping_rounds=100, verbose_eval=100)
+    lgb_models.append(model)
+
+
+
 # Predict each Model
 preds = []
 for model in xgb_models:
     pred = model.predict(xgb.DMatrix(X_train))
     pred = pred.flatten()
     preds.append(pred)
+for model in cat_models:
+    pred = model.predict(X_train)
+    preds.append(pred)
+for model in lgb_models:
+    pred = model.predict(X_train, num_iteration=model.best_iteration)
+    pred = pred.reshape(len(X_train), 1).flatten()
+    preds.append(pred)
 
 df = pd.DataFrame(preds).T
-df.columns = ['X1', 'X2', 'X3', 'X4', 'X5']
+df.columns = [
+    'X1', 'X2', 'X3', 'X4', 'X5',
+    'C1', 'C2', 'C3', 'C4', 'C5',
+    'L1', 'L2', 'L3', 'L4', 'L5']
 df['mean'] = df.mean(axis='columns')
-
 print(df.head(10))
 
 
@@ -287,6 +356,13 @@ preds = []
 for model in xgb_models:
     pred = model.predict(xgb.DMatrix(X_test))
     pred = pred.flatten()
+    preds.append(pred)
+for model in cat_models:
+    pred = model.predict(X_test)
+    preds.append(pred)
+for model in lgb_models:
+    pred = model.predict(X_test, num_iteration=model.best_iteration)
+    pred = pred.reshape(len(X_test), 1).flatten()
     preds.append(pred)
 
 df_submission = pd.DataFrame(preds).T

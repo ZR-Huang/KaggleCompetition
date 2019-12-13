@@ -8,27 +8,26 @@ from tqdm import tqdm
 class Preprocess:
 
     def __init__(self, filepath):
-
         self.filepath = filepath
-        # self.data = self.load_data
-        # self.columns = columns
+        
 
     def __load_data(self):
         self.data = pd.read_csv(self.filepath)
-        # return pd.read_csv(self.filepath)
+
     
     def __get_title_list(self):
         self.title_list = list(self.data.title.unique())
-        # return list(self.data.title.unique())
+
 
     def __get_event_code_list(self):
         self.event_code_list = list(self.data.event_code.unique())
-        # return list(self.data.event_code.unique())
+
 
     def __get_win_code_of_title(self):
         self.win_code_of_title = dict(zip(self.title_list, (np.ones(len(self.title_list))).astype('int')* 4100))
         self.win_code_of_title['Bird Measurer (Assessment)'] = 4110
     
+
     def compile_data(self, user_sample, test_set = False):
         '''
         user_sample : DataFrame from train/test group by 'installation_id'
@@ -60,7 +59,8 @@ class Preprocess:
             session_title = session['title'].iloc[0]
 
             if session_type != 'Assessment':
-                time_spent_each_title[session_title] += session['game_time'].iloc[-1]
+                time_spent = session['game_time'].iloc[-1] / 1000 # [sec] add
+                time_spent_each_title[session_title] += time_spent
             
             if session_type == 'Assessment' and (test_set or len(session) > 1):
                 # search for event_code 4100 (4110)
@@ -73,7 +73,7 @@ class Preprocess:
                 features = deepcopy(types_count)
                 features.update(deepcopy(time_spent_each_title))
                 features.update(deepcopy(event_code_count))
-                features['session_title'] = session_type
+                features['session_title'] = session_title
                 features['accumu_win_n'] = accumu_win_n
                 features['accumu_loss_n'] = accumu_loss_n
                 accumu_win_n += win_n
@@ -134,6 +134,7 @@ class Preprocess:
             return user_assessments[-1]
         return user_assessments
 
+
     def get_data(self, test_set=False):
         # get things done
         self.__load_data()
@@ -155,6 +156,7 @@ class Preprocess:
 
 
 if __name__ == "__main__":
-    # p_train = Preprocess('2019_Data_Science_B')
-    p_test = Preprocess('2019_Data_Science_Bowl/data/test.csv')
-    p_test.get_data(test_set=True).to_csv('2019_Data_Science_Bowl/data/test_input.csv', index=False)
+    p_train = Preprocess('2019_Data_Science_Bowl/data/train.csv')
+    p_train.get_data().to_csv('2019_Data_Science_Bowl/data/train_input.csv', index=False)
+    # p_test = Preprocess('2019_Data_Science_Bowl/data/test.csv')
+    # p_test.get_data(test_set=True).to_csv('2019_Data_Science_Bowl/data/test_input.csv', index=False)
