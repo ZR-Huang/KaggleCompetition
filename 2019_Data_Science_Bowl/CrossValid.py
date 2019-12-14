@@ -27,20 +27,24 @@ for col in categorical_cols:
     X[col] = label_encoder.fit_transform(X[col])
 
 
-# param = {
-#   'n_estimators': range(200, 600, 25),
-#   'learning_rate': [0.001, 0.003, 0.006, 0.009, 0.01, 0.03, 0.06],
-#   'max_depth': [3, 6, 9, 12, 15],
-#   'min_child_weight': [1, 2, 3, 4, 5, 6, 7],
-#   'subsample' : [0.4, 0.5, 0.6, 0.7, 0.8],
-# }
-
 param = {
-  'n_estimators': [275],
-  'learning_rate': [0.06],
-  'max_depth': [9],
+  'n_estimators': range(150, 400, 25),
+  'learning_rate': [0.006, 0.009, 0.01, 0.03, 0.06, 0.09],
+  'max_depth': [7, 8, 9, 10, 11],
 }
 
+# param = {
+#   'n_estimators': [275],
+#   'learning_rate': [0.06],
+#   'max_depth': [9],
+# }
+# Best score: -1.135999577937502
+
+param = {
+  'n_estimators': [150],
+  'learning_rate': [0.03],
+  'max_depth': [7],
+}
 
 
 gs = GridSearchCV(XGBRegressor(
