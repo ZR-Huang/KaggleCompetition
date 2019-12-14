@@ -45,6 +45,7 @@ param = {
   'learning_rate': [0.03],
   'max_depth': [7],
 }
+# Best Score : -1.068639288246002
 
 
 gs = GridSearchCV(XGBRegressor(
