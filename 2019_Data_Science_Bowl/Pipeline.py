@@ -10,7 +10,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.metrics import cohen_kappa_score, accuracy_score
+from sklearn.metrics import cohen_kappa_score, accuracy_score, confusion_matrix
 
 import xgboost as xgb
 from catboost import CatBoostRegressor
@@ -183,6 +183,28 @@ class Preprocess:
         return pd.DataFrame(complied_data)
 
 
+def qwk(act,pred,n=4,hist_range=(0,3)):
+    
+    O = confusion_matrix(act,pred)
+    O = np.divide(O,np.sum(O))
+    
+    W = np.zeros((n,n))
+    for i in range(n):
+        for j in range(n):
+            W[i][j] = ((i-j)**2)/((n-1)**2)
+            
+    act_hist = np.histogram(act,bins=n,range=hist_range)[0]
+    prd_hist = np.histogram(pred,bins=n,range=hist_range)[0]
+    
+    E = np.outer(act_hist,prd_hist)
+    E = np.divide(E,np.sum(E))
+    
+    num = np.sum(np.multiply(W,O))
+    den = np.sum(np.multiply(W,E))
+        
+    return 1-np.divide(num,den)
+
+
 # Load the train/test data
 p_train = Preprocess(os.path.join(DIR, 'train.csv'))
 p_test = Preprocess(os.path.join(DIR, 'test.csv'))
@@ -208,9 +230,9 @@ folds = StratifiedKFold(n_splits=NFOLDS, shuffle=True, random_state=666)
 
 xgb_models = []
 xgb_params = {
-    'max_depth' : 9, 
-    'learning_rate': 0.06, 
-    'n_estimators': 275,
+    'max_depth' : 7, # mod 9 -> 7
+    'learning_rate': 0.03, # mod 0.06 -> 0.03
+    'n_estimators': 150, # mod 275 -> 150
     'objective': 'reg:squarederror',
     'seed' : 666
 }
@@ -274,6 +296,8 @@ lgb_params = {
     'lambda_l2': 1,
     'verbose': 100,
 }
+orginal_X_train_cols = X_train.columns
+X_train.columns = ["".join (c if c.isalnum() else "_" for c in str(x)) for x in X_train.columns]
 for fold, (train_ids, val_ids) in enumerate(folds.split(X_train, y)):
     print(f'- Fold :{fold+1} / {NFOLDS}')
     train_set = lgb.Dataset(X.iloc[train_ids], y[train_ids], categorical_feature=categorical_cols)
@@ -283,7 +307,7 @@ for fold, (train_ids, val_ids) in enumerate(folds.split(X_train, y)):
     lgb_models.append(model)
 
 
-
+X_train.columns = orginal_X_train_cols
 # Predict each Model
 preds = []
 for model in xgb_models:
@@ -303,7 +327,10 @@ df.columns = [
     'X1', 'X2', 'X3', 'X4', 'X5',
     'C1', 'C2', 'C3', 'C4', 'C5',
     'L1', 'L2', 'L3', 'L4', 'L5']
-df['mean'] = df.mean(axis='columns')
+df['all_mean'] = df.mean(axis='columns')
+df['X_mean'] = df[['X1', 'X2', 'X3', 'X4', 'X5']].mean(axis='columns')
+df['C_mean'] = df[['C1', 'C2', 'C3', 'C4', 'C5']].mean(axis='columns')
+df['L_mean'] = df[['L1', 'L2', 'L3', 'L4', 'L5']].mean(axis='columns')
 print(df.head(10))
 
 
@@ -336,19 +363,46 @@ class OptRounder:
         return self.bincut(coef, X)
 
 # Optimize Rounding Coefficients
-optR = OptRounder()
-optR.fit(df['mean'].values.reshape(-1,), y)
-res = optR.get_res()
-coefficients = res.x
-print('- Iterations performed\t:{res.nit}')
-print('- Optimized coefficients\t:{coefficients}')
-print(f'- Cohen Kappa Score\t:{-res.fun}')
+# optR = OptRounder()
+# optR.fit(df['mean'].values.reshape(-1,), y)
+# res = optR.get_res()
+# coefficients = res.x
+# print('- Iterations performed\t:{res.nit}')
+# print('- Optimized coefficients\t:{coefficients}')
+# print(f'- Cohen Kappa Score\t:{-res.fun}')
 
 # final classification
-df['predict'] = optR.predict(df['mean'].values, coefficients).astype(int)
-df['y'] = y
-acc = accuracy_score(df['y'], df['predict'])
-print('- Accuracy of the final classification\t:{acc}')
+# df['predict'] = optR.predict(df['mean'].values, coefficients).astype(int)
+# df['y'] = y
+# acc = accuracy_score(df['y'], df['predict'])
+# print('- Accuracy of the final classification\t:{acc}')
+optRs = []
+coefficients_list = []
+for col in ['X_mean', 'C_mean', 'L_mean', 'all_mean']:
+    optR = OptRounder()
+    optR.fit(df[col].values.reshape(-1,), y)
+    res = optR.get_res()
+    coefficients = res.x
+    print(f'- Iterations performed\t:{res.nit}')
+    print(f'- Optimized coefficients\t:{coefficients}')
+    print(f'- Cohen Kappa Score\t:{-res.fun}')
+    optRs.append(optR)
+    coefficients_list.append(coefficients)
+    df[col.replace('_mean', '_pred')] = optR.predict(df[col].values, coefficients).astype(int)
+
+
+result = df[['X_pred', 'C_pred', 'L_pred', 'all_pred']].mode(axis='columns')
+
+for index, row in result.iterrows():
+    if not pd.isnull(row[1]):
+        result.iloc[index][0] = df.iloc[index]['L_pred'] # use all_pred QWK: 0.79420 # update xgb's params and use L_pred QWK:0.82418
+
+result.drop(columns=[1], inplace=True)
+result = result.astype(int)
+
+print('OOF QWK:', qwk(y, result))
+print("Accuray:", accuracy_score(y, result))
+
 
 X_test = X_test[list(X_train.columns)]
 # Make submission
@@ -366,8 +420,26 @@ for model in lgb_models:
     preds.append(pred)
 
 df_submission = pd.DataFrame(preds).T
-df_submission['mean'] = df_submission.mean(axis='columns')
-df_submission['pred'] = optR.predict(df_submission['mean'].values, coefficients).astype(int)
+df_submission.columns = [
+    'X1', 'X2', 'X3', 'X4', 'X5',
+    'C1', 'C2', 'C3', 'C4', 'C5',
+    'L1', 'L2', 'L3', 'L4', 'L5']
+df_submission['all_mean'] = df_submission.mean(axis='columns')
+df_submission['X_mean'] = df_submission[['X1', 'X2', 'X3', 'X4', 'X5']].mean(axis='columns')
+df_submission['C_mean'] = df_submission[['C1', 'C2', 'C3', 'C4', 'C5']].mean(axis='columns')
+df_submission['L_mean'] = df_submission[['L1', 'L2', 'L3', 'L4', 'L5']].mean(axis='columns')
+for optR, coefficients, col in zip(optRs, coefficients_list, ['X_mean', 'C_mean', 'L_mean', 'all_mean']):
+    df_submission[col.replace('_mean', '_pred')] = optR.predict(df_submission[col].values, coefficients).astype(int)
+# df_submission['mean'] = df_submission.mean(axis='columns')
+# df_submission['pred'] = optR.predict(df_submission['mean'].values, coefficients).astype(int)
+
+result = df[['X_pred', 'C_pred', 'L_pred', 'all_pred']].mode(axis='columns')
+
+for index, row in result.iterrows():
+    if not pd.isnull(row[1]):
+        result.iloc[index][0] = df.iloc[index]['L_pred'] 
+
+df_submission['pred'] = result[0].astype(int)
 
 submission = pd.read_csv(os.path.join(DIR, 'sample_submission.csv'))
 submission['accuracy_group'] = df_submission['pred']
